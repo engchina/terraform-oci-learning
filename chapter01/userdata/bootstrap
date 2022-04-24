@@ -1,0 +1,23 @@
+#!/bin/bash
+firewall-offline-cmd --zone=public --add-port=80/tcp
+systemctl restart firewalld
+yum install -y yum-utils
+yum-config-manager --disable ol7_mysql80 ol7_mysql80_connectors_community ol7_mysql80_tools_community
+rpm -ivh https://repo.mysql.com//mysql80-community-release-el7-5.noarch.rpm
+yum-config-manager --enable mysql57-community
+yum update -y
+
+yum -y remove httpd
+yum -y remove httpd-tools
+yum install -y httpd24 php72 mysql57-community php72-mysqlnd
+service httpd start
+chkconfig httpd on
+
+usermod -a -G apache opc
+chown -R opc:apache /var/www
+chmod 2775 /var/www
+find /var/www -type d -exec chmod 2775 {} \;
+find /var/www -type f -exec chmod 0664 {} \;
+cd /var/www/html
+curl http://169.254.169.254/latest/meta-data/instance-id -o index.html
+curl https://raw.githubusercontent.com/hashicorp/learn-terramino/master/index.php -O

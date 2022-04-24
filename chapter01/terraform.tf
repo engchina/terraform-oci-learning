@@ -1,7 +1,7 @@
 terraform {
   required_providers {
-    aws = {
-      source = "hashicorp/aws"
+    oci = {
+      source = "oracle/oci"
     }
     random = {
       source = "hashicorp/random"
