@@ -51,9 +51,3 @@ data "oci_core_images" "tf_example_supported_platform_config_shape_images" {
     regex  = true
   }
 }
-
-resource "local_file" "id_rsa" {
-  content  = var.ssh_private_key
-  filename = "id_rsa"
-  file_permission = "400"
-}

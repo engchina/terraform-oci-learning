@@ -60,6 +60,12 @@ resource "oci_core_instance" "tf_example_instance" {
   }
 }
 
+resource "local_file" "private_key_file" {
+  content  = var.ssh_private_key
+  filename = "${path.module}/id_rsa"
+  file_permission = "400"
+}
+
 # Define the volumes that are attached to the compute instances.
 resource "oci_core_volume" "tf_example_block_volume" {
   count               = var.num_instances * var.num_iscsi_volumes_per_instance
