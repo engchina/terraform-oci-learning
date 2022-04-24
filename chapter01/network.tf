@@ -1,4 +1,5 @@
 locals {
+  imcp_protocol  = "1"
   tcp_protocol   = "6"
   all_protocols  = "all"
   anywhere       = "0.0.0.0/0"
@@ -35,10 +36,10 @@ resource "oci_core_default_route_table" "tf_example_route_table" {
 
 resource "oci_core_subnet" "tf_example_subnet" {
   availability_domain = data.oci_identity_availability_domain.tf_example_ad.name
-  cidr_block          = "10.1.20.0/24"
+  cidr_block          = "10.1.10.0/24"
   display_name        = "TfExampleSubnet"
   dns_label           = "tfexamplesubnet"
-  security_list_ids   = [oci_core_vcn.tf_example_vcn.default_security_list_id]
+  security_list_ids   = [oci_core_security_list.tf_example_security_list.id]
   compartment_id      = var.compartment_ocid
   vcn_id              = oci_core_vcn.tf_example_vcn.id
   route_table_id      = oci_core_vcn.tf_example_vcn.default_route_table_id
@@ -53,6 +54,35 @@ resource "oci_core_security_list" "tf_example_security_list" {
   egress_security_rules {
     protocol    = local.tcp_protocol
     destination = local.anywhere
+  }
+
+  ingress_security_rules {
+    protocol = local.imcp_protocol
+    source   = local.anywhere
+
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
+
+  ingress_security_rules {
+    protocol = local.imcp_protocol
+    source   = local.vcn_cidr_block
+
+    icmp_options {
+      type = 3
+    }
+  }
+
+  ingress_security_rules {
+    protocol = local.tcp_protocol
+    source   = local.anywhere
+
+    tcp_options {
+      max = "22"
+      min = "22"
+    }
   }
 
   ingress_security_rules {
