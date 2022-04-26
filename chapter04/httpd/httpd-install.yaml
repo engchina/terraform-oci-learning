@@ -1,0 +1,16 @@
+- become: yes
+  hosts: all
+  name: httpd-install
+  tasks:
+    - name: Run echo command
+      command: /bin/echo this is one terraform ansible example
+    - name: Install httpd
+      yum: name=httpd update_cache=yes state=latest
+      notify:
+        - Restart httpd
+    - name: Run cp index.html
+      command: /usr/bin/cp /home/opc/www/html/index.html /var/www/html/index.html
+
+  handlers:
+    - name: Restart httpd
+      service: name=httpd state=restarted

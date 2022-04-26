@@ -29,3 +29,9 @@ override.tf.json
 # example: *tfplan*
 
 .idea
+**/id_rsa
+**/ssh-config-example
+**/init.sh
+**/plan.sh
+**/apply.sh
+**/destroy.sh

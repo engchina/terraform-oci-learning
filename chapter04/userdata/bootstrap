@@ -1,0 +1,24 @@
+#!/bin/bash
+firewall-offline-cmd --zone=public --add-port=80/tcp
+systemctl restart firewalld
+
+mkdir -p /home/opc/www/html
+usermod -a -G opc opc
+chown -R opc:opc /home/opc/www
+chmod 2775 /home/opc/www
+find /home/opc/www -type d -exec chmod 2775 {} \;
+find /home/opc/www -type f -exec chmod 0664 {} \;
+cd /home/opc/www/html
+
+EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
+LOCAL_IP=$(ip route show to 0.0.0.0/0 | awk '{ print $5 }' | xargs ip addr show | grep -Po 'inet \K[\d.]+')
+#HOSTNAME=$(hostname -f)
+HOSTNAME=$(hostname)
+
+curl -sL --retry 3 http://169.254.169.254/opc/v1/instance/ | tee /tmp/instance_meta.json
+read INSTANCE_ID_0 INSTANCE_ID_1 <<< $(jq -r '.id' /tmp/instance_meta.json | perl -pe 's/(.*?\.){4}\K/ /g' | perl -pe 's/\.+\s/ /g')
+INSTANCE_ID=$INSTANCE_ID_0.$INSTANCE_ID_1
+echo "Hostname: $HOSTNAME <br>" > index.html
+echo "Public IP: $EXTERNAL_IP <br>" >> index.html
+echo "Private IP: $LOCAL_IP <br>" >> index.html
+echo "Instance ID: $INSTANCE_ID <br>" >> index.html

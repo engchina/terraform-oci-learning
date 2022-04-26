@@ -1,6 +1,12 @@
-data "oci_identity_availability_domain" "tf_example_ad" {
-  compartment_id = var.tenancy_ocid
-  ad_number      = 1
+# ------ Create SSH Config File
+data "template_file" "ssh_userdata" {
+  count    = var.num_instances
+  template = file(var.ssh_config_file)
+  vars     = {
+    destination_public_ip = "${oci_core_instance.tf_example_instance[count.index].public_ip}"
+    destination_ssh_user  = "${var.destination_ssh_username}"
+    private_key_path      = "${local_file.private_key_file.filename}"
+  }
 }
 
 # Get the latest Oracle Linux image

@@ -5,6 +5,8 @@ private_key_path = "/home/oracle/.oci/oci_api_key.pem"
 region           = "ap-chuncheon-1"
 compartment_ocid = "ocid1.compartment.oc1..aaaaaaaahr7aicqtodxmcfor6pbqn3hvsngpftozyxzqw36gj4kh3w3kkj4q"
 
+num_instances = 3
+
 ssh_public_key   = <<EOT
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCt8HhqA+aXblBaRWaS04WjpG9c7vJO0n3SEBhy4P94+w8ckTG24XCZGUmr8jamUI5sLEJzr8zsOzCwYKyqK+ZVLTjaPPrdXJCi2zSDYMO+8NVUvnPqEY+Ha2odVzuuX6CNw/45/i0vXVHprMoi6RJakWec4QMKxc2KXi69OcY4sc+MML2f46TscZSPg45Q4bL+/q0boOs7qR8hR2aqdNzdEJMBWWJrOSoDTYB4cbTMgFF5IRZe5++Zdjfo6ZuR/SnVzoHmI0aap8RLbssphL3NSxET+oaUTihZb/NG6kO4KOGIpWnkbwI3DGCixqNrgu8cUdPuG8zakj6nE1IgEAGP ssh-key-oci
 EOT

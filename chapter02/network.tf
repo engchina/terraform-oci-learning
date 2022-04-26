@@ -11,6 +11,10 @@ resource "oci_core_vcn" "tf_example_vcn" {
   compartment_id = var.compartment_ocid
   display_name   = "TfExampleVcn"
   dns_label      = "tfexamplevcn"
+
+  defined_tags = {
+    "${oci_identity_tag_namespace.tf_example_tag_namespace1.name}.${oci_identity_tag.tf_example_tag1.name}" = "tf-example-vcn"
+  }
 }
 
 resource "oci_core_internet_gateway" "tf_example_internet_gateway" {

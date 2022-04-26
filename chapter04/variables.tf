@@ -52,3 +52,18 @@ variable "instance_shape_config_memory_in_gbs" {
 variable "volume_size" {
   default = "50" # size in GBs
 }
+
+variable "ssh_config_file" {
+  description = "SSH Private Key Path"
+  default     = "./ssh-config/ssh-config.tpl"
+}
+
+variable "destination_ssh_username" {
+  description = "SSH Username"
+  default     = "opc"
+}
+
+variable "playbook_path" {
+  description = "httpd ansible playbook path"
+  default     = "./httpd/httpd-install.yaml"
+}

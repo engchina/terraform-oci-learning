@@ -20,3 +20,7 @@ output "tf_example_application_url" {
 output "tf_example_boot_volume_ids" {
   value = [oci_core_instance.tf_example_instance.*.boot_volume_id]
 }
+
+output "tf_example_namespace" {
+  value = data.oci_objectstorage_namespace.ns.namespace
+}

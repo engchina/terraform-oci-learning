@@ -1,6 +1,6 @@
 Host *
-  IdentityFile ./id_rsa
-  User opc
+  IdentityFile ${private_key_path}
+  User ${destination_ssh_user}
   Port 22
   IgnoreUnknown UseKeychain
   StrictHostKeyChecking no

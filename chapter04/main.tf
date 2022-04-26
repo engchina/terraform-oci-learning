@@ -1,5 +1,3 @@
-resource "random_pet" "name" {}
-
 resource "oci_core_instance" "tf_example_instance" {
   count               = var.num_instances
   availability_domain = data.oci_identity_availability_domain.tf_example_ad.name
@@ -36,7 +34,7 @@ resource "oci_core_instance" "tf_example_instance" {
   # When changing this value, make sure to run 'terraform apply' so that it takes effect before the resource is destroyed.
   #preserve_boot_volume = true
 
-  metadata     = {
+  metadata = {
     ssh_authorized_keys = var.ssh_public_key
     user_data           = base64encode(file("./userdata/bootstrap"))
   }
@@ -54,9 +52,15 @@ resource "oci_core_instance" "tf_example_instance" {
 }
 
 resource "local_file" "private_key_file" {
-  content  = var.ssh_private_key
-  filename = "${path.module}/id_rsa"
+  content         = var.ssh_private_key
+  filename        = "${path.module}/id_rsa"
   file_permission = "400"
+}
+
+resource "local_file" "ssh_config_file" {
+  count    = var.num_instances
+  filename = "${path.module}/ssh-config-example"
+  content  = "${data.template_file.ssh_userdata[count.index].rendered}"
 }
 
 resource "null_resource" "remote-exec" {
@@ -67,15 +71,20 @@ resource "null_resource" "remote-exec" {
 
   provisioner "remote-exec" {
     connection {
-      agent       = false
-      timeout     = "30m"
-      host        = oci_core_instance.tf_example_instance[count.index].public_ip
+      type        = "ssh"
       user        = "opc"
+      host        = oci_core_instance.tf_example_instance[count.index].public_ip
       private_key = var.ssh_private_key
+      agent       = false
+      timeout     = "10m"
     }
 
     inline = [
-      "echo hello",
+      "echo terraform and ansible example",
     ]
+  }
+
+  provisioner "local-exec" {
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --timeout 600 --ssh-common-args '-F ${path.module}/ssh-config-example' -i '${oci_core_instance.tf_example_instance[count.index].public_ip},' ${var.playbook_path}"
   }
 }
