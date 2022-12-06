@@ -36,4 +36,5 @@ override.tf.json
 **/plan.sh
 **/apply.sh
 **/destroy.sh
+backup
 
