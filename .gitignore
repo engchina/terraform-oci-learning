@@ -30,8 +30,10 @@ override.tf.json
 
 .idea
 **/id_rsa
+**/terraform.tfvars
 **/ssh-config-example
 **/init.sh
 **/plan.sh
 **/apply.sh
 **/destroy.sh
+
